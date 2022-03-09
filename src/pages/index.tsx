@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Prismic from '@prismicio/client';
 import { RichText } from 'prismic-dom';
 import { FiCalendar, FiUser } from 'react-icons/fi';
+import Link from 'next/link';
 import { getPrismicClient } from '../services/prismic';
 
 import commonStyles from '../styles/common.module.scss';
@@ -38,17 +39,24 @@ export default function Home({ postsPagination }: HomeProps) {
         <section className={styles.postsSection}>
           <img src="Logo.svg" alt="logo" />
           {postsPagination.results.map(post => (
-            <div className={styles.singlePost}>
-              <h2>{post.data.title}</h2>
-              <h4>{post.data.subtitle}</h4>
-              <div className={styles.postInfo}>
-                <FiCalendar color="#BBBBBB" />
-                <p>{post.first_publication_date}</p>
-                <FiUser color="#BBBBBB" />
-                <p>{post.data.author}</p>
-              </div>
+            <div className={styles.singlePost} key={post.uid}>
+              <Link href={`/post/${post.uid}`}>
+                <a>
+                  <h2>{post.data.title}</h2>
+                  <h4>{post.data.subtitle}</h4>
+                  <div className={styles.postInfo}>
+                    <FiCalendar color="#BBBBBB" />
+                    <p>{post.first_publication_date}</p>
+                    <FiUser color="#BBBBBB" />
+                    <p>{post.data.author}</p>
+                  </div>
+                </a>
+              </Link>
             </div>
           ))}
+          {postsPagination.next_page && (
+            <p className={styles.loadMore}>Carregar mais posts</p>
+          )}
         </section>
       </main>
     </>
