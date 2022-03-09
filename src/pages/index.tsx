@@ -1,9 +1,10 @@
-import { GetStaticProps } from 'next';
 import Head from 'next/head';
 import Prismic from '@prismicio/client';
-import { RichText } from 'prismic-dom';
 import { FiCalendar, FiUser } from 'react-icons/fi';
 import Link from 'next/link';
+import { format, parseISO } from 'date-fns';
+import ptBR from 'date-fns/locale/pt-BR';
+import { useState } from 'react';
 import { getPrismicClient } from '../services/prismic';
 
 import commonStyles from '../styles/common.module.scss';
@@ -29,6 +30,30 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps) {
+  const [postsState, setPostsState] = useState<PostPagination>(postsPagination);
+
+  function handleLoadMore() {
+    fetch(postsPagination.next_page)
+      .then(response => response.json())
+      .then(data => {
+        setPostsState({
+          next_page: data.next_page,
+          results: [
+            ...postsState.results,
+            {
+              uid: data.results[0].uid,
+              first_publication_date: data.results[0].first_publication_date,
+              data: {
+                title: data.results[0].data.title,
+                subtitle: data.results[0].data.subtitle,
+                author: data.results[0].data.author,
+              },
+            },
+          ],
+        });
+      });
+  }
+
   return (
     <>
       <Head>
@@ -38,15 +63,23 @@ export default function Home({ postsPagination }: HomeProps) {
       <main className={commonStyles.container}>
         <section className={styles.postsSection}>
           <img src="Logo.svg" alt="logo" />
-          {postsPagination.results.map(post => (
+          {postsState.results.map(post => (
             <div className={styles.singlePost} key={post.uid}>
               <Link href={`/post/${post.uid}`}>
                 <a>
                   <h2>{post.data.title}</h2>
                   <h4>{post.data.subtitle}</h4>
-                  <div className={styles.postInfo}>
+                  <div className={commonStyles.postInfo}>
                     <FiCalendar color="#BBBBBB" />
-                    <p>{post.first_publication_date}</p>
+                    <p>
+                      {format(
+                        parseISO(post.first_publication_date),
+                        'dd MMM yyyy',
+                        {
+                          locale: ptBR,
+                        }
+                      )}
+                    </p>
                     <FiUser color="#BBBBBB" />
                     <p>{post.data.author}</p>
                   </div>
@@ -54,8 +87,10 @@ export default function Home({ postsPagination }: HomeProps) {
               </Link>
             </div>
           ))}
-          {postsPagination.next_page && (
-            <p className={styles.loadMore}>Carregar mais posts</p>
+          {postsState.next_page && (
+            <p className={styles.loadMore} onClick={() => handleLoadMore()}>
+              Carregar mais posts
+            </p>
           )}
         </section>
       </main>
@@ -76,13 +111,7 @@ export const getStaticProps = async () => {
   const results = postsResponse.results.map(post => {
     return {
       uid: post.uid,
-      first_publication_date: new Date(
-        post.first_publication_date
-      ).toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric',
-      }),
+      first_publication_date: post.first_publication_date,
       data: {
         title: post.data.title,
         subtitle: post.data.subtitle,

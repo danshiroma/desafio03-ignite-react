@@ -7,6 +7,7 @@
   }
 
   .singlePost {
+    margin-bottom: 3rem;
     h2 {
       font-size: 1.75rem;
       line-height: 2.125rem;
@@ -21,25 +22,7 @@
       font-weight: 400;
       text-align: justify;
       color: var(--body);
-      margin-bottom: 1.5rem;
-    }
-
-    .postInfo {
-      display: flex;
-      align-items: center;
-
-      p {
-        font-size: 0.875rem;
-        color: var(--info);
-        line-height: 17px;
-        margin-right: 26px;
-      }
-
-      svg {
-        width: 20px;
-        height: 20px;
-        margin-right: 0.5rem;
-      }
+      // margin-bottom: 1.5rem;
     }
   }
   .loadMore {
