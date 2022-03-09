@@ -36,22 +36,26 @@ export default function Home({ postsPagination }: HomeProps) {
     fetch(postsPagination.next_page)
       .then(response => response.json())
       .then(data => {
-        setPostsState({
-          next_page: data.next_page,
-          results: [
-            ...postsState.results,
-            {
-              uid: data.results[0].uid,
-              first_publication_date: data.results[0].first_publication_date,
-              data: {
-                title: data.results[0].data.title,
-                subtitle: data.results[0].data.subtitle,
-                author: data.results[0].data.author,
-              },
-            },
-          ],
-        });
+        setPostsState(getResponseData(data));
       });
+  }
+
+  function getResponseData(data) {
+    return {
+      next_page: data.next_page,
+      results: [
+        ...postsState.results,
+        {
+          uid: data.results[0].uid,
+          first_publication_date: data.results[0].first_publication_date,
+          data: {
+            title: data.results[0].data.title,
+            subtitle: data.results[0].data.subtitle,
+            author: data.results[0].data.author,
+          },
+        },
+      ],
+    };
   }
 
   return (
