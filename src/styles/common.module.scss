@@ -3,3 +3,21 @@
   margin: 0 auto;
   padding: 0 2rem;
 }
+
+.postInfo {
+  display: flex;
+  align-items: center;
+  margin-top: 1.5rem;
+  p {
+    font-size: 0.875rem;
+    color: var(--info);
+    line-height: 17px;
+    margin-right: 26px;
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+  }
+}
