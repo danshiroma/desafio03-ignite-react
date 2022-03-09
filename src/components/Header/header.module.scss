@@ -1,1 +1,14 @@
-// TODO
+.header {
+  max-width: 1120px;
+  height: 105px;
+  margin-right: 10rem;
+  margin-left: 10rem;
+
+  img {
+    margin: 40px 210px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
